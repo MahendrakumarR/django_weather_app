@@ -1,5 +1,17 @@
 {% extends 'index.html' %}
 
 {% block content%}
-    <h1> This is Weather App</h1>
+    <div class="container-fluid" style="margin-top:60px; margin-bottom:100px;">
+        <div class="col-md-offset-4 col-md-3">
+            <h3 class="page-header text-primary text-center"><span class="fas fa-cloud-sun"></span>Django - WeatherApp</h3>
+            {% csrf_token %}
+            <form method="POST">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit"><span class="fa fa-add"></span>Add City</button>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock%}
