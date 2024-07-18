@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .form import CityForm           # here import from 'form.py' file
 from .models import City
 import requests
@@ -8,7 +8,6 @@ def home(request):
     url = 'http://api.openweathermap.org/data/2.5/weather?q={},&appid=e7615501807a414c6cbf283b8c65ef20&units=metric'  # this is a API
     if request.method == 'POST':
         form = CityForm(request.POST)
-        print(form)
         if form.is_valid():
             NCity = form.cleaned_data['name']
             CCity = City.objects.filter(name=NCity).count()
@@ -22,7 +21,26 @@ def home(request):
             else:
                 messages.error(request,"City Already Exists..!")
 
-    form = CityForm()            
-    return render(request, "weather_app.html",{'form':form})
+    form = CityForm()   
+
+    cities = City.objects.all()
+    data=[]
+    for city in cities:
+        res = requests.get(url.format(city)).json()
+        city_weather = {
+            'city'        : city,
+            'temperature' : res['main']['temp'],
+            'description' : res['weather'][0]['description'],
+            'country'     : res['sys']['country'],
+            'icon'        : res['weather'][0]['icon'],
+        }
+        data.append(city_weather)
+    context = {'data' : data, 'form':form}
+    return render(request, "weather_app.html",context)
+
+def delete_city(request,CName):
+    City.objects.get(name=CName).delete()
+    messages.success(request," "+CName+" Removed Successfully..!")
+    return redirect('Home')
 
 # Create your views here.
