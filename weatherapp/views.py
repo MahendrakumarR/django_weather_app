@@ -20,7 +20,7 @@ def home(request):
                     messages.error(request,"City Does Not Exists..!")
             else:
                 messages.error(request,"City Already Exists..!")
-
+ 
     form = CityForm()   
 
     cities = City.objects.all()
